@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import ky from 'ky';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import ky from "ky";
 // import logo from './kcco.png';
 
 const fetchCache = {};
@@ -21,7 +21,7 @@ class Card extends Component {
     } else {
       const paramsString = this.props.location.search.slice(1);
       const searchParams = new URLSearchParams(paramsString);
-      const url = searchParams.get('url');
+      const url = searchParams.get("url");
       const response = await ky(`/api/cards/${hash}/?url=${url}`);
       if (response.status === 404) {
         this.setState({ notfound: true });
@@ -37,7 +37,7 @@ class Card extends Component {
     const hash = this.props.match.params[0];
     return (
       <div
-        className={this.state.loading ? 'is-loading container' : 'container'}
+        className={this.state.loading ? "is-loading container" : "container"}
       >
         <SimpleNav current={hash} />
         {this.state.notfound && <h1>Page Not Found</h1>}
@@ -115,10 +115,10 @@ class ShowCard extends React.PureComponent {
 }
 
 class Image extends React.PureComponent {
-  async componentDidMount() {
-    const { gifsrc } = this.props;
-    console.log('COULD PRELOAD', gifsrc);
-  }
+  // async componentDidMount() {
+  //   const { gifsrc } = this.props;
+  //   console.log('COULD PRELOAD', gifsrc);
+  // }
   render() {
     const { src, gifsrc, caption } = this.props;
     // if (gifsrc) {
@@ -128,6 +128,6 @@ class Image extends React.PureComponent {
     // } else {
     //   return <img src={src} alt={caption || 'no caption'} />;
     // }
-    return <img src={gifsrc || src} alt={caption || 'no caption'} />;
+    return <img src={gifsrc || src} alt={caption || "no caption"} />;
   }
 }

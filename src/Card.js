@@ -16,6 +16,14 @@ class Card extends Component {
     window.scrollTo(0, 0);
 
     const hash = this.props.match.params[0];
+    const visitedHashes = JSON.parse(
+      localStorage.getItem("visitedHashes") || "{}"
+    );
+    if (!visitedHashes[hash]) {
+      visitedHashes[hash] = new Date();
+      localStorage.setItem("visitedHashes", JSON.stringify(visitedHashes));
+    }
+
     if (fetchCache[hash]) {
       this.setState({ loading: false, card: fetchCache[hash] });
     } else {
@@ -39,10 +47,12 @@ class Card extends Component {
       <div
         className={this.state.loading ? "is-loading container" : "container"}
       >
-        <SimpleNav current={hash} />
+        <SimpleNav current={hash} history={this.props.history} />
         {this.state.notfound && <h1>Page Not Found</h1>}
         {this.state.card && <ShowCard card={this.state.card} />}
-        {this.state.card && <SimpleNav current={hash} />}
+        {this.state.card && (
+          <SimpleNav current={hash} history={this.props.history} />
+        )}
       </div>
     );
   }
@@ -53,6 +63,7 @@ export default Card;
 class SimpleNav extends React.PureComponent {
   render() {
     // const { current } = this.props;
+    const { history } = this.props;
     return (
       <nav className="level is-mobile">
         {/* {current && (
@@ -63,10 +74,22 @@ class SimpleNav extends React.PureComponent {
           </p>
         )} */}
         <p className="level-item has-text-centered">
-          <Link to="/" className="button is-info">
-            {/* <img src={logo} />  */}
-            Home
-          </Link>
+          {history.action === "PUSH" ? (
+            <Link
+              to="/"
+              className="button is-info"
+              onClick={event => {
+                event.preventDefault();
+                history.goBack();
+              }}
+            >
+              Go Back
+            </Link>
+          ) : (
+            <Link to="/" className="button is-info">
+              Home
+            </Link>
+          )}
         </p>
         {/* {current && (
           <p className="level-item has-text-centered">

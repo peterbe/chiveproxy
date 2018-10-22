@@ -1,0 +1,48 @@
+// Green #00c300
+// $body-background-color
+
+// $background: $white-ter:
+
+// $link: $blue;
+
+// $primary: $turquoise;
+// $link: $blue;
+// $info: $cyan;
+// $success: $green;
+// $warning: $yellow;
+// $danger: $red;
+// $dark: $grey-darker;
+// // $text: $grey-dark
+// $text: $white-ter;
+
+@import "node_modules/bulma/sass/utilities/initial-variables";
+// $background: #272727;
+$body-background-color: $grey-darker;
+// $text: #ffffff;
+$text: $white-ter;
+
+$text-strong: $white-ter;
+
+@import "bulma";
+
+// iPhone 6/7/8 portrait
+$break-small: 375px;
+
+div.pictures div.box {
+  @media screen and (max-width: $break-small) {
+    // border: 1px solid red;
+    // Slighly less at the bottom
+    padding: 6px 6px 3px 6px;
+  }
+}
+
+section.section {
+  @media screen and (max-width: $break-small) {
+    // border: 2px solid red;
+    padding: 2rem 0.5rem;
+  }
+}
+
+a:visited {
+    color: $purple;
+}

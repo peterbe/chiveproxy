@@ -94,7 +94,7 @@ class ShowCard extends React.PureComponent {
               <div className="box" key={picture.img}>
                 <article className="media">
                   <div className="media-content">
-                    <div className="content">
+                    <div className="contentxxx">
                       <Image
                         src={picture.img}
                         gifsrc={picture.gifsrc}

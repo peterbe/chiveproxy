@@ -1,6 +1,6 @@
 {
-  "short_name": "ChiveSupermobile",
-  "name": "The Chive Supermobile App",
+  "short_name": "ChivePWA",
+  "name": "The Chive PWA",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

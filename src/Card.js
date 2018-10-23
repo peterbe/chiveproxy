@@ -1,21 +1,20 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import ky from "ky";
-// import logo from './kcco.png';
-
-const fetchCache = {};
 
 class Card extends Component {
-  state = {
-    card: null,
-    loading: true,
-    notfound: false
-  };
-
   async componentDidMount() {
-    window.scrollTo(0, 0);
+    await this.loadHash();
+  }
 
+  async componentDidUpdate(prevProps) {
+    if (prevProps.match.params[0] !== this.props.match.params[0]) {
+      await this.loadHash();
+    }
+  }
+
+  loadHash = async () => {
+    window.scrollTo(0, 0);
     const hash = this.props.match.params[0];
+
     const visitedHashes = JSON.parse(
       localStorage.getItem("visitedHashes") || "{}"
     );
@@ -24,35 +23,43 @@ class Card extends Component {
       localStorage.setItem("visitedHashes", JSON.stringify(visitedHashes));
     }
 
-    if (fetchCache[hash]) {
-      this.setState({ loading: false, card: fetchCache[hash] });
-    } else {
-      const paramsString = this.props.location.search.slice(1);
-      const searchParams = new URLSearchParams(paramsString);
-      const url = searchParams.get("url");
-      const response = await ky(`/api/cards/${hash}/?url=${url}`);
-      if (response.status === 404) {
-        this.setState({ notfound: true });
-      } else {
-        const data = await response.json();
-        this.setState({ loading: false, card: data });
-        fetchCache[hash] = data;
-      }
+    const paramsString = this.props.location.search.slice(1);
+    const searchParams = new URLSearchParams(paramsString);
+    const url = searchParams.get("url");
+
+    const { cards } = this.props;
+    if (!cards.state.allCards[hash]) {
+      cards.fetchCard(hash, url);
     }
-  }
+    await cards.setCurrentHash(hash);
+  };
 
   render() {
     const hash = this.props.match.params[0];
+    const { cards } = this.props;
     return (
       <div
-        className={this.state.loading ? "is-loading container" : "container"}
+        className={cards.state.loading ? "is-loading container" : "container"}
       >
-        <SimpleNav current={hash} history={this.props.history} />
-        {this.state.notfound && <h1>Page Not Found</h1>}
-        {this.state.card && <ShowCard card={this.state.card} />}
-        {this.state.card && (
-          <SimpleNav current={hash} history={this.props.history} />
+        {/* <SimpleNav current={hash} history={this.props.history} /> */}
+
+        {cards.state.loadingError && (
+          <article className="message is-danger">
+            <div className="message-header">
+              <p>Loading Error</p>
+              <button className="delete" aria-label="delete" />
+            </div>
+            <div className="message-body">{cards.state.loadingError}</div>
+          </article>
         )}
+
+        {cards.state.cardsNotFound[hash] && <h1>Page Not Found</h1>}
+        {cards.state.allCards[hash] && (
+          <ShowCard card={cards.state.allCards[hash]} />
+        )}
+        {/* {cards.state.allCards[hash] && (
+          <SimpleNav current={hash} history={this.props.history} />
+        )} */}
       </div>
     );
   }
@@ -60,48 +67,48 @@ class Card extends Component {
 
 export default Card;
 
-class SimpleNav extends React.PureComponent {
-  render() {
-    // const { current } = this.props;
-    const { history } = this.props;
-    return (
-      <nav className="level is-mobile">
-        {/* {current && (
-          <p className="level-item has-text-centered">
-            <Link to={`/${current}/previous`} className="link is-info">
-              Previous
-            </Link>
-          </p>
-        )} */}
-        <p className="level-item has-text-centered">
-          {history.action === "PUSH" ? (
-            <Link
-              to="/"
-              className="button is-info"
-              onClick={event => {
-                event.preventDefault();
-                history.goBack();
-              }}
-            >
-              Go Back
-            </Link>
-          ) : (
-            <Link to="/" className="button is-info">
-              Home
-            </Link>
-          )}
-        </p>
-        {/* {current && (
-          <p className="level-item has-text-centered">
-            <Link to={`/${current}/next`} className="link is-info">
-              Next
-            </Link>
-          </p>
-        )} */}
-      </nav>
-    );
-  }
-}
+// class SimpleNav extends React.PureComponent {
+//   render() {
+//     // const { current } = this.props;
+//     const { history } = this.props;
+//     return (
+//       <nav className="level is-mobile">
+//         {/* {current && (
+//           <p className="level-item has-text-centered">
+//             <Link to={`/${current}/previous`} className="link is-info">
+//               Previous
+//             </Link>
+//           </p>
+//         )} */}
+//         <p className="level-item has-text-centered">
+//           {history.action === "PUSH" ? (
+//             <Link
+//               to="/"
+//               className="button is-info"
+//               onClick={event => {
+//                 event.preventDefault();
+//                 history.goBack();
+//               }}
+//             >
+//               Go Back
+//             </Link>
+//           ) : (
+//             <Link to="/" className="button is-info">
+//               Home
+//             </Link>
+//           )}
+//         </p>
+//         {/* {current && (
+//           <p className="level-item has-text-centered">
+//             <Link to={`/${current}/next`} className="link is-info">
+//               Next
+//             </Link>
+//           </p>
+//         )} */}
+//       </nav>
+//     );
+//   }
+// }
 class ShowCard extends React.PureComponent {
   componentWillMount() {
     document.title = this.props.card.text;

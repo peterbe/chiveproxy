@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import ky from 'ky';
-import { Link, Redirect } from 'react-router-dom';
+import React, { Component } from "react";
+import ky from "ky";
+import { Link, Redirect } from "react-router-dom";
+import logo from "./kcco.png";
 
 // import './App.css';
 
@@ -18,7 +19,7 @@ class Home extends Component {
     if (fetchCache.cards) {
       cards = fetchCache.cards;
     } else {
-      const response = await ky('/api/cards/');
+      const response = await ky("/api/cards/");
       const data = await response.json();
       cards = data.cards;
       fetchCache.cards = cards;
@@ -27,11 +28,11 @@ class Home extends Component {
     // console.log(this.props.match.params);
     if (
       Object.keys(this.props.match.params).length === 2 &&
-      ['next', 'previous'].includes(this.props.match.params[1])
+      ["next", "previous"].includes(this.props.match.params[1])
     ) {
       const current = this.props.match.params[0];
       const direction = this.props.match.params[1];
-      console.log('CURRENT', current);
+      console.log("CURRENT", current);
       let previous = null;
       let next = false;
       let redirectTo = null;
@@ -42,7 +43,7 @@ class Home extends Component {
           break;
         }
         if (card.uri === current) {
-          if (direction === 'next') {
+          if (direction === "next") {
             next = true;
           } else {
             redirectTo = previous;
@@ -60,7 +61,7 @@ class Home extends Component {
     if (this.state.redirectTo) {
       const card = this.state.redirectTo;
       const pathname = `/${card.uri}?url=${encodeURIComponent(card.url)}`;
-      console.log('PATHNAME:', pathname);
+      console.log("PATHNAME:", pathname);
       return <Redirect to={pathname} push={true} />;
       // return (
       //   <Redirect
@@ -73,7 +74,7 @@ class Home extends Component {
     }
     return (
       <div
-        className={this.state.loading ? 'is-loading container' : 'container'}
+        className={this.state.loading ? "is-loading container" : "container"}
       >
         {this.state.cards && <ShowCards cards={this.state.cards} />}
       </div>
@@ -91,6 +92,9 @@ class ShowCards extends React.PureComponent {
     const { cards } = this.props;
     return (
       <div className="content">
+        <p style={{ textAlign: "center" }}>
+          <img src={logo} alt="Keep Calm and Chive On" />
+        </p>
         {cards.map(card => {
           return (
             <div className="box" key={card.uri}>

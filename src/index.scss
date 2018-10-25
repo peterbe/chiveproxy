@@ -45,6 +45,13 @@ section.section {
   }
 }
 
-a:visited {
+.box a:visited {
     color: $purple;
+}
+
+
+.version-info {
+  text-align: center;
+  margin: 20px;
+  font-size: 80%;
 }

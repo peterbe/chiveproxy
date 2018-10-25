@@ -39,6 +39,7 @@ class App extends React.Component {
                     <Route component={NoMatch} />
                   </Switch>
                 </section>
+                <DisplayVersion />
               </div>
             )}
           </Subscribe>
@@ -58,6 +59,36 @@ const NoMatch = ({ location }) => (
   </div>
 );
 
+class DisplayVersion extends React.PureComponent {
+  getVersionData = () => {
+    const element = document.querySelector("#_version");
+    return Object.assign({}, element.dataset);
+  };
+
+  render() {
+    const data = this.getVersionData();
+    return (
+      <p className="version-info">
+        <a
+          href="https://github.com/peterbe/chiveproxy"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ChiveProxy
+        </a>
+        <br />
+        Version{" "}
+        <a
+          href={`https://github.com/peterbe/chiveproxy/commit/${data.commit}`}
+          title={data.date}
+        >
+          {data.commit.slice(0, 7)}
+        </a>{" "}
+        {data.date}
+      </p>
+    );
+  }
+}
 class Nav extends React.PureComponent {
   render() {
     const {

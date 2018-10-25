@@ -3,18 +3,18 @@ import { Link } from "react-router-dom";
 import logo from "./kcco.png";
 
 class Home extends Component {
-  // state = {
-  //   cards: null,
-  //   loading: true,
-  //   redirectTo: null
-  // };
-
   async componentDidMount() {
     const { cards } = this.props;
     if (!cards.state.homeCards) {
       cards.fetchHomeCards();
     }
     await cards.setCurrentHash(null);
+  }
+
+  async componentDidUpdate() {
+    if (this.props.history.action === "PUSH") {
+      window.scrollTo(0, 0);
+    }
   }
 
   render() {
@@ -57,6 +57,8 @@ class ShowCards extends React.PureComponent {
                   <Link to={`/${card.uri}?url=${encodeURIComponent(card.url)}`}>
                     <img src={card.img} alt={card.text} />
                   </Link>
+                  <br />
+                  <small>{card.human_time}</small>
                 </div>
               </article>
             </div>

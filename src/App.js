@@ -16,10 +16,10 @@ class App extends React.Component {
           <Subscribe to={[CardsContainer]}>
             {cards => (
               <div>
-                {/* <Nav cards={cards} /> */}
-                <Nav
-                  nextCard={cards.state.nextCard}
-                  prevCard={cards.state.prevCard}
+                {/* <Nav nextCard={cards.state.nextCard} /> */}
+                <Route
+                  path="/"
+                  render={props => <Nav cards={cards} {...props} />}
                 />
                 <section className="section">
                   <Switch>
@@ -58,86 +58,15 @@ const NoMatch = ({ location }) => (
   </div>
 );
 
-// class Nav extends React.PureComponent {
-//   state = { open: false };
-//   render() {
-//     const { nextCard, prevCard, allCards } = this.props;
-//     return (
-//       <nav className="navbar" role="navigation" aria-label="main navigation">
-//         <div className="navbar-brand">
-//           <Link to="/" className="navbar-item">
-//             <button className="button">Home</button>
-//           </Link>
-//           {prevCard && (
-//             <Link
-//               to={`/${prevCard.uri}?url=${encodeURIComponent(prevCard.url)}`}
-//               className="navbar-item"
-//             >
-//               <button className="button">Previous</button>
-//             </Link>
-//           )}
-//           {nextCard && (
-//             <Link
-//               to={`/${nextCard.uri}?url=${encodeURIComponent(nextCard.url)}`}
-//               className="navbar-item"
-//             >
-//               <button className="button">Next</button>
-//             </Link>
-//           )}
-//           <a
-//             href="/"
-//             role="button"
-//             className={
-//               this.state.open
-//                 ? "is-active navbar-burger burger"
-//                 : "navbar-burger burger"
-//             }
-//             aria-label="menu"
-//             aria-expanded="false"
-//             data-target="navbarBasicExample"
-//             onClick={event => {
-//               event.preventDefault();
-//               this.setState({ open: !this.state.open });
-//             }}
-//           >
-//             <span aria-hidden="true" />
-//             <span aria-hidden="true" />
-//             <span aria-hidden="true" />
-//           </a>
-//         </div>
-
-//         <div
-//           id="navbarBasicExample"
-//           className={this.state.open ? "is-active navbar-menu" : "navbar-menu"}
-//         >
-//           <div className="navbar-start">
-//             <Link to="/" className="navbar-item">
-//               Home
-//             </Link>
-//             {/* <a className="navbar-item">Documentation</a> */}
-//           </div>
-
-//           <div className="navbar-end">
-//             <div className="navbar-item">
-//               {/* <div class="buttons">
-//           <a class="button is-primary">
-//             <strong>Sign up</strong>
-//           </a>
-//           <a class="button is-light">
-//             Log in
-//           </a>
-//         </div> */}
-//             </div>
-//           </div>
-//         </div>
-//       </nav>
-//     );
-//   }
-// }
 class Nav extends React.PureComponent {
-  state = { open: false };
   render() {
-    const { nextCard, prevCard } = this.props;
+    const {
+      cards: {
+        state: { nextCard = null }
+      },
+      history,
+      location
+    } = this.props;
     return (
       <nav
         className="navbar is-fixed-top"
@@ -148,20 +77,25 @@ class Nav extends React.PureComponent {
           <Link to="/" className="navbar-item">
             <button className="button is-primary">Home</button>
           </Link>
-          {prevCard && (
-            <Link
-              to={`/${prevCard.uri}?url=${encodeURIComponent(prevCard.url)}`}
-              className="navbar-item"
-            >
-              <button className="button">Previous</button>
-            </Link>
-          )}
+          {history.action === "PUSH" &&
+            location.pathname !== "/" && (
+              <Link
+                to="/"
+                className="navbar-item"
+                onClick={event => {
+                  event.preventDefault();
+                  history.goBack();
+                }}
+              >
+                <button className="button">⬅ Go back</button>
+              </Link>
+            )}
           {nextCard && (
             <Link
               to={`/${nextCard.uri}?url=${encodeURIComponent(nextCard.url)}`}
               className="navbar-item"
             >
-              <button className="button">Next</button>
+              <button className="button">Next ➡</button>
             </Link>
           )}
         </div>

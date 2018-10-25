@@ -8,8 +8,8 @@ export class CardsContainer extends Container {
     cardsNotFound: [],
     loading: true,
     loadingError: null,
-    nextCard: null,
-    prevCard: null
+    nextCard: null
+    // prevCard: null
   };
 
   fetchHomeCards = async () => {
@@ -59,24 +59,25 @@ export class CardsContainer extends Container {
   setCurrentHash = async hash => {
     if (!hash) {
       this.setState({
-        nextCard: null,
-        prevCard: null
+        nextCard: null
+        // prevCard: null
       });
     } else {
       if (!this.state.homeCards) {
         await this.fetchHomeCards();
         this.setCurrentHash(hash);
       } else {
-        let prevCard = null;
+        // let prevCard = null;
         let nextCard = null;
         const currentIndex = this.state.homeCards.findIndex(
           card => card.uri === hash
         );
-        if (currentIndex > 0) {
-          prevCard = this.state.homeCards[currentIndex - 1];
-        }
+        // if (currentIndex > 0) {
+        //   prevCard = this.state.homeCards[currentIndex - 1];
+        // }
         nextCard = this.state.homeCards[currentIndex + 1];
-        this.setState({ nextCard, prevCard });
+        // this.setState({ nextCard, prevCard });
+        this.setState({ nextCard });
       }
     }
   };

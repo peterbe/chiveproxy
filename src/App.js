@@ -129,6 +129,20 @@ class Nav extends React.PureComponent {
               <button className="button">Next ➡</button>
             </Link>
           )}
+
+          {!(history.action === "PUSH" && location.pathname !== "/") && (
+            <Link
+              to={location.pathname}
+              className="navbar-item"
+              onClick={event => {
+                event.preventDefault();
+                // window.scrollTo(0, 0);
+                window.scroll({ top: 0, behavior: "smooth" });
+              }}
+            >
+              <button className="button">⬆ Top</button>
+            </Link>
+          )}
         </div>
       </nav>
     );

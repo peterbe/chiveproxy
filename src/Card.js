@@ -67,48 +67,6 @@ class Card extends Component {
 
 export default Card;
 
-// class SimpleNav extends React.PureComponent {
-//   render() {
-//     // const { current } = this.props;
-//     const { history } = this.props;
-//     return (
-//       <nav className="level is-mobile">
-//         {/* {current && (
-//           <p className="level-item has-text-centered">
-//             <Link to={`/${current}/previous`} className="link is-info">
-//               Previous
-//             </Link>
-//           </p>
-//         )} */}
-//         <p className="level-item has-text-centered">
-//           {history.action === "PUSH" ? (
-//             <Link
-//               to="/"
-//               className="button is-info"
-//               onClick={event => {
-//                 event.preventDefault();
-//                 history.goBack();
-//               }}
-//             >
-//               Go Back
-//             </Link>
-//           ) : (
-//             <Link to="/" className="button is-info">
-//               Home
-//             </Link>
-//           )}
-//         </p>
-//         {/* {current && (
-//           <p className="level-item has-text-centered">
-//             <Link to={`/${current}/next`} className="link is-info">
-//               Next
-//             </Link>
-//           </p>
-//         )} */}
-//       </nav>
-//     );
-//   }
-// }
 class ShowCard extends React.PureComponent {
   componentWillMount() {
     document.title = this.props.card.text;
@@ -118,10 +76,13 @@ class ShowCard extends React.PureComponent {
     return (
       <div className="content">
         <h2>{card.text}</h2>
+        <div className="grid">
+          <Grid pictures={card.pictures} />
+        </div>
         <div className="pictures">
-          {card.pictures.map(picture => {
+          {card.pictures.map((picture, i) => {
             return (
-              <div className="box" key={picture.img}>
+              <div className="box" id={`img${i + 1}`} key={picture.img}>
                 <article className="media">
                   <div className="media-content">
                     <div className="contentxxx">
@@ -144,20 +105,35 @@ class ShowCard extends React.PureComponent {
   }
 }
 
+class Grid extends React.PureComponent {
+  render() {
+    const { pictures } = this.props;
+    return (
+      <div className="box" style={{ marginBottom: 24 }}>
+        {pictures.map((picture, i) => (
+          <a
+            href={`#img${i + 1}`}
+            key={picture.img}
+            onClick={event => {
+              event.preventDefault();
+              const id = event.currentTarget.getAttribute("href").slice(1);
+              window.scroll({
+                top: document.getElementById(id).offsetTop + 30,
+                behavior: "smooth"
+              });
+            }}
+          >
+            <img src={picture.img} alt="im" />
+          </a>
+        ))}
+      </div>
+    );
+  }
+}
+
 class Image extends React.PureComponent {
-  // async componentDidMount() {
-  //   const { gifsrc } = this.props;
-  //   console.log('COULD PRELOAD', gifsrc);
-  // }
   render() {
     const { src, gifsrc, caption } = this.props;
-    // if (gifsrc) {
-    //   return (
-    //     <img src={src} className="is-overlay" alt={caption || 'no caption'} />
-    //   );
-    // } else {
-    //   return <img src={src} alt={caption || 'no caption'} />;
-    // }
     return <img src={gifsrc || src} alt={caption || "no caption"} />;
   }
 }

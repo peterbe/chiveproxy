@@ -30,6 +30,11 @@ $text-strong: $white-ter;
 // iPhone 6/7/8 portrait
 $break-small: 375px;
 
+
+body {
+  padding-top: 140px;
+}
+
 div.pictures div.box {
   @media screen and (max-width: $break-small) {
     // border: 1px solid red;
@@ -46,12 +51,35 @@ section.section {
 }
 
 .box a:visited {
-    color: $purple;
+  color: $purple;
 }
-
 
 .version-info {
   text-align: center;
   margin: 20px;
   font-size: 80%;
+}
+
+.grid .box {
+  a {
+    display: inline-block;
+    position: relative;
+    width: 74px;
+    height: 74px;
+    overflow: hidden;
+    margin-right: 2px;
+    margin-bottom: 2px;
+
+    img {
+      position: absolute;
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      height: 100%;
+    width: auto;
+    }
+  }
 }

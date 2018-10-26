@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+import smoothscroll from "smoothscroll-polyfill";
+
+// kick off the polyfill!
+// Needed for the sake if iOS Safari
+smoothscroll.polyfill();
 
 class Card extends Component {
   async componentDidMount() {

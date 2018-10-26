@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
-import { Provider } from "unstated";
-import { Subscribe } from "unstated";
+import { Provider, Subscribe } from "unstated";
 import { CardsContainer } from "./State";
 import Home from "./Home";
 import Card from "./Card";

@@ -1,5 +1,11 @@
 import React, { Component } from "react";
+import Observer from "react-intersection-observer";
 import smoothscroll from "smoothscroll-polyfill";
+import { Subscribe } from "unstated";
+import "intersection-observer";
+
+import "./card.scss";
+import { BoxInViewContainer } from "./State";
 
 // kick off the polyfill!
 // Needed for the sake if iOS Safari
@@ -36,7 +42,7 @@ class Card extends Component {
     if (!cards.state.allCards[hash]) {
       cards.fetchCard(hash, url);
     }
-    await cards.setCurrentHash(hash);
+    // await cards.setCurrentHash(hash);
   };
 
   render() {
@@ -46,6 +52,11 @@ class Card extends Component {
       <div
         className={cards.state.loading ? "is-loading container" : "container"}
       >
+        {cards.state.loading && (
+          <div className="content">
+            <h2>Loading...</h2>
+          </div>
+        )}
         {/* <SimpleNav current={hash} history={this.props.history} /> */}
 
         {cards.state.loadingError && (
@@ -72,7 +83,7 @@ class Card extends Component {
 
 export default Card;
 
-class ShowCard extends React.PureComponent {
+class ShowCardInner extends React.PureComponent {
   componentWillMount() {
     document.title = this.props.card.text;
   }
@@ -87,27 +98,70 @@ class ShowCard extends React.PureComponent {
         <div className="pictures">
           {card.pictures.map((picture, i) => {
             return (
-              <div className="box" id={`img${i + 1}`} key={picture.img}>
-                <article className="media">
-                  <div className="media-content">
-                    <div className="contentxxx">
-                      <Image
-                        src={picture.img}
-                        gifsrc={picture.gifsrc}
-                        caption={card.caption}
-                      />
-
-                      {picture.caption && (
-                        <p className="caption">{picture.caption}</p>
-                      )}
-                    </div>
-                  </div>
-                </article>
-              </div>
+              <PictureBox
+                key={picture.img}
+                i={i}
+                picture={picture}
+                card={card}
+              />
             );
           })}
         </div>
       </div>
+    );
+  }
+}
+
+class ShowCard extends React.Component {
+  render() {
+    const props = this.props;
+    return (
+      <Subscribe to={[BoxInViewContainer]}>
+        {inview => <ShowCardInner inview={inview} {...props} />}
+      </Subscribe>
+    );
+  }
+}
+
+function iToId(i) {
+  return `img${(i + 1).toString().padStart(3, "0")}`;
+}
+
+class PictureBox extends React.PureComponent {
+  render() {
+    const { i, card, picture } = this.props;
+    const id = iToId(i);
+    return (
+      <Subscribe to={[BoxInViewContainer]}>
+        {inView => (
+          <div className="box" id={id} key={picture.img}>
+            <Observer
+              onChange={isInView => {
+                if (window.scrollY > 0) {
+                  inView.set(id, isInView);
+                } else {
+                  inView.reset();
+                }
+              }}
+            >
+              <article className="media">
+                <div className="media-content">
+                  <div>
+                    <Image
+                      src={picture.img}
+                      gifsrc={picture.gifsrc}
+                      caption={card.caption}
+                    />
+                    {picture.caption && (
+                      <p className="caption">{picture.caption}</p>
+                    )}
+                  </div>
+                </div>
+              </article>
+            </Observer>
+          </div>
+        )}
+      </Subscribe>
     );
   }
 }

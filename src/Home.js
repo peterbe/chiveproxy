@@ -8,7 +8,7 @@ class Home extends Component {
     if (!cards.state.homeCards) {
       cards.fetchHomeCards();
     }
-    await cards.setCurrentHash(null);
+    // await cards.setCurrentHash(null);
   }
 
   async componentDidUpdate() {

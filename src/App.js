@@ -1,24 +1,27 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import { Provider, Subscribe } from "unstated";
-import { CardsContainer } from "./State";
+import { CardsContainer, BoxInViewContainer } from "./State";
 import Home from "./Home";
 import Card from "./Card";
 
 let cards = new CardsContainer();
+let inview = new BoxInViewContainer();
 
 class App extends React.Component {
   render() {
     return (
-      <Provider inject={[cards]}>
+      <Provider inject={[cards, inview]}>
         <Router>
-          <Subscribe to={[CardsContainer]}>
-            {cards => (
+          <Subscribe to={[CardsContainer, BoxInViewContainer]}>
+            {(cards, inview) => (
               <div>
                 {/* <Nav nextCard={cards.state.nextCard} /> */}
                 <Route
                   path="/"
-                  render={props => <Nav cards={cards} {...props} />}
+                  render={props => (
+                    <Nav cards={cards} inview={inview} {...props} />
+                  )}
                 />
                 <section className="section">
                   <Switch>
@@ -90,13 +93,11 @@ class DisplayVersion extends React.PureComponent {
 }
 class Nav extends React.PureComponent {
   render() {
-    const {
-      cards: {
-        state: { nextCard = null }
-      },
-      history,
-      location
-    } = this.props;
+    const { history, location, inview } = this.props;
+    let showTopButton = false;
+    if (window.scrollY > 0) {
+      showTopButton = Object.values(inview.state.inView).some(x => x);
+    }
     return (
       <nav
         className="navbar is-fixed-top"
@@ -120,23 +121,15 @@ class Nav extends React.PureComponent {
                 <button className="button">⬅ Go back</button>
               </Link>
             )}
-          {nextCard && (
-            <Link
-              to={`/${nextCard.uri}?url=${encodeURIComponent(nextCard.url)}`}
-              className="navbar-item"
-            >
-              <button className="button">Next ➡</button>
-            </Link>
-          )}
-
-          {!(history.action === "PUSH" && location.pathname !== "/") && (
+          {showTopButton && (
             <Link
               to={location.pathname}
               className="navbar-item"
               onClick={event => {
                 event.preventDefault();
-                // window.scrollTo(0, 0);
+                inview.stopRecording();
                 window.scroll({ top: 0, behavior: "smooth" });
+                setTimeout(inview.reset, 1000);
               }}
             >
               <button className="button">⬆ Top</button>

@@ -43,6 +43,14 @@ div.pictures div.box {
   }
 }
 
+div.pictures div.box p.caption {
+  @media screen and (max-width: $break-small) {
+    // border: 1px solid red;
+    // Slighly less at the bottom
+    padding: 10px;
+  }
+}
+
 section.section {
   @media screen and (max-width: $break-small) {
     // border: 2px solid red;

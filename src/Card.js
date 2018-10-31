@@ -97,7 +97,9 @@ class ShowCard extends React.PureComponent {
                         caption={card.caption}
                       />
 
-                      {card.caption && <p>{card.caption}</p>}
+                      {picture.caption && (
+                        <p className="caption">{picture.caption}</p>
+                      )}
                     </div>
                   </div>
                 </article>

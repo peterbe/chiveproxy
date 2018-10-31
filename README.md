@@ -1,1 +1,7 @@
-The front-end code for The Chive Proxy app.
+To dev, run:
+
+    yarn start
+
+To deploy, run:
+
+    ./bin/deploy.sh

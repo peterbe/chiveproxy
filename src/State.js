@@ -73,7 +73,6 @@ export class BoxInViewContainer extends Container {
 
   set = (id, is) => {
     if (this.state.recording) {
-      console.log(id, is);
       const inView = Object.assign({}, this.state.inView);
       inView[id] = is;
       this.setState({ inView });

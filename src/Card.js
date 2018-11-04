@@ -173,15 +173,20 @@ class Grid extends React.PureComponent {
       <div className="box" style={{ marginBottom: 24 }}>
         {pictures.map((picture, i) => (
           <a
-            href={`#img${i + 1}`}
+            href={`#${iToId(i)}`}
             key={picture.img}
             onClick={event => {
               event.preventDefault();
               const id = event.currentTarget.getAttribute("href").slice(1);
-              window.scroll({
-                top: document.getElementById(id).offsetTop + 30,
-                behavior: "smooth"
-              });
+              const element = document.getElementById(id);
+              if (element) {
+                window.scroll({
+                  top: element.offsetTop + 30,
+                  behavior: "smooth"
+                });
+              } else {
+                console.warn(`No element with id '${id}'`);
+              }
             }}
           >
             <img src={picture.img} alt="im" />

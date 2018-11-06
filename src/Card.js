@@ -104,7 +104,6 @@ class ShowCardInner extends React.PureComponent {
         </div>
       );
     }
-    console.log("PICTURES:", card.pictures);
     return (
       <div className="content">
         <h2>{card.text}</h2>

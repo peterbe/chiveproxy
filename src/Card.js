@@ -89,6 +89,22 @@ class ShowCardInner extends React.PureComponent {
   }
   render() {
     const { card } = this.props;
+    if (!card.pictures.length) {
+      return (
+        <div className="content">
+          <h2>{card.text}</h2>
+          <article className="message is-danger">
+            <div className="message-header">
+              <p>No Pictures Error</p>
+            </div>
+            <div className="message-body">
+              Sorry. Something's gone nuts. There are no pictures in this post.
+            </div>
+          </article>
+        </div>
+      );
+    }
+    console.log("PICTURES:", card.pictures);
     return (
       <div className="content">
         <h2>{card.text}</h2>

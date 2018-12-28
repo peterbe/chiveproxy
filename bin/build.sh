@@ -7,6 +7,8 @@ find . | grep --color=never '\~$' | xargs rm -f
 yarn run build
 zopfli build/static/**/*.css
 zopfli build/static/**/*.js
+brotli build/static/**/*.css
+brotli build/static/**/*.js
 
 ./bin/update_version.js > build/version.json
 ./bin/insert_version.js build/version.json build/index.html

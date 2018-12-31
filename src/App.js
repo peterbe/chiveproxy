@@ -93,7 +93,7 @@ class DisplayVersion extends React.PureComponent {
 }
 class Nav extends React.PureComponent {
   render() {
-    const { history, location, inview } = this.props;
+    const { history, location, inview, cards } = this.props;
     let showTopButton = false;
     if (window.scrollY > 0) {
       showTopButton = Object.values(inview.state.inView).some(x => x);
@@ -108,19 +108,33 @@ class Nav extends React.PureComponent {
           <Link to="/" className="navbar-item">
             <button className="button is-primary">Home</button>
           </Link>
-          {history.action === "PUSH" &&
-            location.pathname !== "/" && (
-              <Link
-                to="/"
-                className="navbar-item"
-                onClick={event => {
-                  event.preventDefault();
-                  history.goBack();
-                }}
-              >
-                <button className="button">⬅ Go back</button>
-              </Link>
-            )}
+          {cards.state.loading && <span>Loading...</span>}
+          {cards.state.loadingError && (
+            <Link
+              to="/"
+              className="navbar-item"
+              onClick={event => {
+                event.preventDefault();
+                cards.setState({ loadingError: null }, () => {
+                  cards.fetchHomeCards();
+                });
+              }}
+            >
+              <button className="button">☠︎ Reload</button>
+            </Link>
+          )}
+          {history.action === "PUSH" && location.pathname !== "/" && (
+            <Link
+              to="/"
+              className="navbar-item"
+              onClick={event => {
+                event.preventDefault();
+                history.goBack();
+              }}
+            >
+              <button className="button">⬅ Go back</button>
+            </Link>
+          )}
           {showTopButton && (
             <Link
               to={location.pathname}

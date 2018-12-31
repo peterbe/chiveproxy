@@ -6,9 +6,10 @@ class Home extends Component {
   async componentDidMount() {
     const { cards } = this.props;
     if (!cards.state.homeCards) {
-      cards.fetchHomeCards();
+      cards.readHomeCardsFromCache().finally(() => {
+        cards.fetchHomeCards();
+      });
     }
-    // await cards.setCurrentHash(null);
   }
 
   async componentDidUpdate() {
@@ -23,6 +24,21 @@ class Home extends Component {
       <div
         className={cards.state.loading ? "is-loading container" : "container"}
       >
+        {cards.state.loadingError && (
+          <article className="message is-danger">
+            <div className="message-header">
+              <p>Loading Error</p>
+              <button
+                className="delete"
+                aria-label="delete"
+                onClick={event => {
+                  // cards.setState({ loadingError: null });
+                }}
+              />
+            </div>
+            <div className="message-body">{cards.state.loadingError}</div>
+          </article>
+        )}
         {cards.state.homeCards && <ShowCards cards={cards.state.homeCards} />}
       </div>
     );

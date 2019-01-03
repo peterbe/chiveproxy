@@ -7,7 +7,7 @@ class Home extends Component {
     const { cards } = this.props;
     if (!cards.state.homeCards) {
       cards.readHomeCardsFromCache().finally(() => {
-        cards.fetchHomeCards();
+        cards.loadHomeCards();
       });
     }
   }
@@ -40,6 +40,20 @@ class Home extends Component {
           </article>
         )}
         {cards.state.homeCards && <ShowCards cards={cards.state.homeCards} />}
+        {cards.state.homeCards && (
+          <p>
+            <button
+              className="button is-medium is-fullwidth"
+              type="button"
+              onClick={event => {
+                cards.fetchMore();
+              }}
+            >
+              Load Moar!
+            </button>
+            >
+          </p>
+        )}
       </div>
     );
   }
@@ -47,8 +61,11 @@ class Home extends Component {
 
 export default Home;
 
-class ShowCards extends React.PureComponent {
+class ShowCards extends React.Component {
   componentWillMount() {
+    document.title = `(${this.props.cards.length}) Posts`;
+  }
+  componentDidUpdate() {
     document.title = `(${this.props.cards.length}) Posts`;
   }
   render() {
@@ -60,17 +77,17 @@ class ShowCards extends React.PureComponent {
         </p>
         {cards.map(card => {
           return (
-            <div className="box" key={card.uri}>
+            <div className="box" key={card.id}>
               <article className="media">
                 <div className="media-content">
                   <h3>
                     <Link
-                      to={`/${card.uri}?url=${encodeURIComponent(card.url)}`}
+                      to={`/${card.id}?url=${encodeURIComponent(card.url)}`}
                     >
                       {card.text}
                     </Link>
                   </h3>
-                  <Link to={`/${card.uri}?url=${encodeURIComponent(card.url)}`}>
+                  <Link to={`/${card.id}?url=${encodeURIComponent(card.url)}`}>
                     <img src={card.img} alt={card.text} />
                   </Link>
                   <br />

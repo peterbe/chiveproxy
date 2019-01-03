@@ -14,14 +14,18 @@ serviceWorker.register({
       registration.waiting.postMessage("skipWaiting");
       window.location.reload(true);
     });
+    const a = document.createElement("a");
+    a.textContent = "Reload app";
+    a.href = "/?reload";
+    a.addEventListener("click", event => {
+      event.preventDefault();
+      alert("Attempting to reload app.");
+      registration.waiting.postMessage("skipWaiting");
+      window.location.reload(true);
+    });
+    document.querySelector(".version-info").appendChild(a);
   }
 });
-
-// setTimeout(() => {
-//   showToast(() => {
-//     console.warn("RELOAD NOW!");
-//   });
-// }, 2000);
 
 function showToast(callback) {
   const a = document.createElement("a");

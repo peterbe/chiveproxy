@@ -31,11 +31,11 @@ class App extends React.Component {
                       render={props => <Home cards={cards} {...props} />}
                     />
                     <Route
-                      path="/([a-f0-9]{8})/(previous|next)"
+                      path="/(\d+)/(previous|next)"
                       render={props => <Home cards={cards} {...props} />}
                     />
                     <Route
-                      path="/([a-f0-9]{8})"
+                      path="/(\d+)"
                       render={props => <Card cards={cards} {...props} />}
                     />
                     <Route component={NoMatch} />

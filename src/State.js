@@ -1,6 +1,8 @@
 import ky from "ky";
-import { get, set } from "idb-keyval";
+import { clear, get, set } from "idb-keyval";
 import { Container } from "unstated";
+
+window._clear_local_state = clear;
 
 export class CardsContainer extends Container {
   state = {
@@ -8,14 +10,19 @@ export class CardsContainer extends Container {
     allCards: {},
     cardsNotFound: [],
     loading: true,
-    loadingError: null
+    loadingError: null,
+    oldestCard: null
   };
 
-  fetchHomeCards = async () => {
+  loadHomeCards = async () => {
     this.setState({ loading: true });
+    this.fetchHomeCards();
+  };
+
+  fetchHomeCards = async (since = null) => {
     let response;
     try {
-      response = await ky("/api/cards/");
+      response = await ky(`/api/cards/?since=${since}`);
     } catch (ex) {
       console.warn(ex);
       return this.setState({
@@ -25,20 +32,53 @@ export class CardsContainer extends Container {
     }
     if (response.ok) {
       const data = await response.json();
+      const homeCards = this.state.homeCards || [];
+      const hasIds = new Set(homeCards.map(card => card.id));
+      data.cards.forEach(card => {
+        if (!hasIds.has(card.id)) {
+          hasIds.add(card.id);
+          homeCards.push(card);
+        }
+      });
       this.setState(
         {
-          homeCards: data.cards,
+          homeCards,
           loading: false,
-          loadingError: null
+          loadingError: null,
+          oldestCard: data._oldest_card
         },
         this.persistHomeCards
       );
+      if (data._updating) {
+        console.warn("Server is updating! Come back again soon.");
+      }
     } else {
       this.setState({
         loading: false,
         loadingError: `${
           response.status
         } trying to load all the home page cards.`
+      });
+    }
+  };
+
+  oldestHomeCard = () => {
+    if (!this.state.homeCards) {
+      return null;
+    }
+    const dates = this.state.homeCards.map(card => card.created);
+    return dates[dates.length - 1];
+  };
+
+  fetchMore = async () => {
+    if (
+      this.state.oldestCard &&
+      this.state.oldestCard === this.oldestHomeCard()
+    ) {
+      alert("You've gone all the way back. Do something else with your life.");
+    } else {
+      this.setState({ loading: true }, () => {
+        this.fetchHomeCards(this.oldestHomeCard());
       });
     }
   };

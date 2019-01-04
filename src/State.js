@@ -34,11 +34,16 @@ export class CardsContainer extends Container {
       const data = await response.json();
       const homeCards = this.state.homeCards || [];
       const hasIds = new Set(homeCards.map(card => card.id));
-      data.cards.forEach(card => {
+      data.cards.forEach((card, i) => {
         if (!hasIds.has(card.id)) {
           hasIds.add(card.id);
           homeCards.push(card);
         }
+      });
+      homeCards.sort((a, b) => {
+        if (a.created > b.created) return -1;
+        if (a.created < b.created) return 1;
+        return 0;
       });
       this.setState(
         {

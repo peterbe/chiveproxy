@@ -11,7 +11,8 @@ export class CardsContainer extends Container {
     cardsNotFound: [],
     loading: true,
     loadingError: null,
-    oldestCard: null
+    oldestCard: null,
+    updating: false
   };
 
   loadHomeCards = async () => {
@@ -50,16 +51,19 @@ export class CardsContainer extends Container {
           homeCards,
           loading: false,
           loadingError: null,
+          updating: false,
           oldestCard: data._oldest_card
         },
         this.persistHomeCards
       );
       if (data._updating) {
         console.warn("Server is updating! Come back again soon.");
+        this.setState({ updating: true });
       }
     } else {
       this.setState({
         loading: false,
+        updating: false,
         loadingError: `${
           response.status
         } trying to load all the home page cards.`

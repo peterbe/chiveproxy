@@ -9,6 +9,8 @@ class Home extends Component {
       cards.readHomeCardsFromCache().finally(() => {
         cards.loadHomeCards();
       });
+    } else {
+      cards.fetchHomeCards();
     }
   }
 
@@ -32,6 +34,7 @@ class Home extends Component {
                 className="delete"
                 aria-label="delete"
                 onClick={event => {
+                  cards.loadHomeCards();
                   // cards.setState({ loadingError: null });
                 }}
               />
@@ -39,6 +42,24 @@ class Home extends Component {
             <div className="message-body">{cards.state.loadingError}</div>
           </article>
         )}
+        {/* {cards.state.updating && (
+          <article className="message is-info">
+            <div className="message-header">
+              <p>Updating...</p>
+              <button
+                className="delete"
+                type="button"
+                aria-label="delete"
+                onClick={event => {
+                  cards.setState({ updating: false });
+                }}
+              />
+            </div>
+            <div className="message-body">
+              Hold your bananas! The server is updating.
+            </div>
+          </article>
+        )} */}
         {cards.state.homeCards && <ShowCards cards={cards.state.homeCards} />}
         {cards.state.homeCards && (
           <p>

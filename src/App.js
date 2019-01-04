@@ -105,7 +105,18 @@ class Nav extends React.PureComponent {
         aria-label="main navigation"
       >
         <div className="navbar-brand">
-          <Link to="/" className="navbar-item">
+          <Link
+            to="/"
+            className="navbar-item"
+            onClick={event => {
+              if (this.reloadCardsTimer) {
+                window.clearTimeout(this.reloadCardsTimer);
+              }
+              this.reloadCardsTimer = window.setTimeout(() => {
+                this.props.cards.fetchHomeCards();
+              }, 1000);
+            }}
+          >
             <button className="button is-primary">Home</button>
           </Link>
           {cards.state.loading && <span>Loading...</span>}

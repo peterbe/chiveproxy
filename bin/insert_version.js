@@ -28,6 +28,7 @@ Object.entries(data).forEach(([key, value]) => {
 });
 tag = tag.trim() + "/>";
 
+// XXX This isn't good enough the old dev-tag might still be there.
 const newHtml = html.replace("</div>", `</div>${tag}`);
 // fs.writeFileSync(htmlFile + ".backup", newHtml, "utf8");
 fs.writeFileSync(htmlFile, newHtml, "utf8");

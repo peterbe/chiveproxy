@@ -61,107 +61,99 @@ const NoMatch = ({ location }) => (
   </div>
 );
 
-class DisplayVersion extends React.PureComponent {
-  getVersionData = () => {
-    const element = document.querySelector("#_version");
-    return Object.assign({}, element.dataset);
-  };
-
-  render() {
-    const data = this.getVersionData();
-    return (
-      <p className="version-info">
-        <a
-          href="https://github.com/peterbe/chiveproxy"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ChiveProxy
-        </a>
-        <br />
-        Version{" "}
-        <a
-          href={`https://github.com/peterbe/chiveproxy/commit/${data.commit}`}
-          title={data.date}
-        >
-          {data.commit.slice(0, 7)}
-        </a>{" "}
-        {data.date}
-      </p>
-    );
-  }
-}
-class Nav extends React.PureComponent {
-  render() {
-    const { history, location, inview, cards } = this.props;
-    let showTopButton = false;
-    if (window.scrollY > 0) {
-      showTopButton = Object.values(inview.state.inView).some(x => x);
-    }
-    return (
-      <nav
-        className="navbar is-fixed-top"
-        role="navigation"
-        aria-label="main navigation"
+const DisplayVersion = React.memo(() => {
+  const element = document.querySelector("#_version");
+  const data = Object.assign({}, element.dataset);
+  return (
+    <p className="version-info">
+      <a
+        href="https://github.com/peterbe/chiveproxy"
+        target="_blank"
+        rel="noopener noreferrer"
       >
-        <div className="navbar-brand">
+        ChiveProxy
+      </a>
+      <br />
+      Version{" "}
+      <a
+        href={`https://github.com/peterbe/chiveproxy/commit/${data.commit}`}
+        title={data.date}
+      >
+        {data.commit.slice(0, 7)}
+      </a>{" "}
+      {data.date}
+    </p>
+  );
+});
+
+const Nav = React.memo(({ history, location, inview, cards }) => {
+  let showTopButton = false;
+  if (window.scrollY > 0) {
+    showTopButton = Object.values(inview.state.inView).some(x => x);
+  }
+  return (
+    <nav
+      className="navbar is-fixed-top"
+      role="navigation"
+      aria-label="main navigation"
+    >
+      <div className="navbar-brand">
+        <Link
+          to="/"
+          className="navbar-item"
+          onClick={event => {
+            if (this.reloadCardsTimer) {
+              window.clearTimeout(this.reloadCardsTimer);
+            }
+            this.reloadCardsTimer = window.setTimeout(() => {
+              this.props.cards.fetchHomeCards();
+            }, 1000);
+          }}
+        >
+          <button className="button is-primary">Home</button>
+        </Link>
+        {cards.state.loading && <span>Loading...</span>}
+        {cards.state.loadingError && (
           <Link
             to="/"
             className="navbar-item"
             onClick={event => {
-              if (this.reloadCardsTimer) {
-                window.clearTimeout(this.reloadCardsTimer);
-              }
-              this.reloadCardsTimer = window.setTimeout(() => {
-                this.props.cards.fetchHomeCards();
-              }, 1000);
+              event.preventDefault();
+              cards.setState({ loadingError: null }, () => {
+                cards.fetchHomeCards();
+              });
             }}
           >
-            <button className="button is-primary">Home</button>
+            <button className="button">☠︎ Reload</button>
           </Link>
-          {cards.state.loading && <span>Loading...</span>}
-          {cards.state.loadingError && (
-            <Link
-              to="/"
-              className="navbar-item"
-              onClick={event => {
-                event.preventDefault();
-                cards.setState({ loadingError: null }, () => {
-                  cards.fetchHomeCards();
-                });
-              }}
-            >
-              <button className="button">☠︎ Reload</button>
-            </Link>
-          )}
-          {history.action === "PUSH" && location.pathname !== "/" && (
-            <Link
-              to="/"
-              className="navbar-item"
-              onClick={event => {
-                event.preventDefault();
-                history.goBack();
-              }}
-            >
-              <button className="button">⬅ Go back</button>
-            </Link>
-          )}
-          {showTopButton && (
-            <Link
-              to={location.pathname}
-              className="navbar-item"
-              onClick={event => {
-                event.preventDefault();
-                inview.stopRecording();
-                window.scroll({ top: 0, behavior: "smooth" });
-                setTimeout(inview.reset, 1000);
-              }}
-            >
-              <button className="button">⬆ Top</button>
-            </Link>
-          )}
-        </div>
-      </nav>
-    );
-  }
-}
+        )}
+        {history.action === "PUSH" && location.pathname !== "/" && (
+          <Link
+            to="/"
+            className="navbar-item"
+            onClick={event => {
+              event.preventDefault();
+              history.goBack();
+            }}
+          >
+            <button className="button">⬅ Go back</button>
+          </Link>
+        )}
+        {showTopButton && (
+          <Link
+            to={location.pathname}
+            className="navbar-item"
+            onClick={event => {
+              event.preventDefault();
+              inview.stopRecording();
+              window.scroll({ top: 0, behavior: "smooth" });
+              setTimeout(inview.reset, 1000);
+            }}
+          >
+            <button className="button">⬆ Top</button>
+          </Link>
+        )}
+      </div>
+    </nav>
+  );
+});

@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import logo from "./kcco.png";
 
-class Home extends Component {
+class Home extends React.Component {
   async componentDidMount() {
     const { cards } = this.props;
     if (!cards.state.homeCards) {
@@ -82,43 +82,36 @@ class Home extends Component {
 
 export default Home;
 
-class ShowCards extends React.Component {
-  componentWillMount() {
-    document.title = `(${this.props.cards.length}) Posts`;
-  }
-  componentDidUpdate() {
-    document.title = `(${this.props.cards.length}) Posts`;
-  }
-  render() {
-    const { cards } = this.props;
-    return (
-      <div className="content">
-        <p style={{ textAlign: "center" }}>
-          <img src={logo} alt="Keep Calm and Chive On" />
-        </p>
-        {cards.map(card => {
-          return (
-            <div className="box" key={card.id}>
-              <article className="media">
-                <div className="media-content">
-                  <h3>
-                    <Link
-                      to={`/${card.id}?url=${encodeURIComponent(card.url)}`}
-                    >
-                      {card.text}
-                    </Link>
-                  </h3>
+function ShowCards({ cards }) {
+  React.useEffect(() => {
+    document.title = `(${cards.length}) Posts`;
+  });
+
+  return (
+    <div className="content">
+      <p style={{ textAlign: "center" }}>
+        <img src={logo} alt="Keep Calm and Chive On" />
+      </p>
+      {cards.map(card => {
+        return (
+          <div className="box" key={card.id}>
+            <article className="media">
+              <div className="media-content">
+                <h3>
                   <Link to={`/${card.id}?url=${encodeURIComponent(card.url)}`}>
-                    <img src={card.img} alt={card.text} />
+                    {card.text}
                   </Link>
-                  <br />
-                  <small>{card.human_time}</small>
-                </div>
-              </article>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
+                </h3>
+                <Link to={`/${card.id}?url=${encodeURIComponent(card.url)}`}>
+                  <img src={card.img} alt={card.text} />
+                </Link>
+                <br />
+                <small>{card.human_time}</small>
+              </div>
+            </article>
+          </div>
+        );
+      })}
+    </div>
+  );
 }

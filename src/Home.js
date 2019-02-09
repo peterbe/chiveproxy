@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "./kcco.png";
+import { useInView } from "react-intersection-observer";
+
+const logo = process.env.PUBLIC_URL + "/kcco.png";
 
 class Home extends React.Component {
   async componentDidMount() {
@@ -42,24 +44,6 @@ class Home extends React.Component {
             <div className="message-body">{cards.state.loadingError}</div>
           </article>
         )}
-        {/* {cards.state.updating && (
-          <article className="message is-info">
-            <div className="message-header">
-              <p>Updating...</p>
-              <button
-                className="delete"
-                type="button"
-                aria-label="delete"
-                onClick={event => {
-                  cards.setState({ updating: false });
-                }}
-              />
-            </div>
-            <div className="message-body">
-              Hold your bananas! The server is updating.
-            </div>
-          </article>
-        )} */}
         {cards.state.homeCards && <ShowCards cards={cards.state.homeCards} />}
         {cards.state.homeCards && (
           <p>
@@ -87,31 +71,68 @@ function ShowCards({ cards }) {
     document.title = `(${cards.length}) Posts`;
   });
 
+  const beenInView = new Set(
+    JSON.parse(sessionStorage.getItem("beenInView") || "[]")
+  );
+
   return (
     <div className="content">
       <p style={{ textAlign: "center" }}>
         <img src={logo} alt="Keep Calm and Chive On" />
       </p>
-      {cards.map(card => {
+      {cards.map((card, i) => {
         return (
-          <div className="box" key={card.id}>
-            <article className="media">
-              <div className="media-content">
-                <h3>
-                  <Link to={`/${card.id}?url=${encodeURIComponent(card.url)}`}>
-                    {card.text}
-                  </Link>
-                </h3>
-                <Link to={`/${card.id}?url=${encodeURIComponent(card.url)}`}>
-                  <img src={card.img} alt={card.text} />
-                </Link>
-                <br />
-                <small>{card.human_time}</small>
-              </div>
-            </article>
-          </div>
+          <Box
+            card={card}
+            key={card.id}
+            startInView={i <= 10 || beenInView.has(card.id)}
+          />
         );
       })}
+    </div>
+  );
+}
+
+function Box({ card, startInView }) {
+  const [beenInView, setBeenInView] = React.useState(startInView);
+
+  const ref = React.useRef();
+  const inView = useInView(ref, {
+    /* https://www.npmjs.com/package/react-intersection-observer#options */
+    triggerOnce: true
+  });
+  React.useEffect(() => {
+    if (beenInView && !startInView) {
+      const rememberedInView = JSON.parse(
+        sessionStorage.getItem("beenInView") || "[]"
+      );
+      rememberedInView.push(card.id);
+      sessionStorage.setItem("beenInView", JSON.stringify(rememberedInView));
+    }
+  }, [beenInView]);
+  if (inView && !beenInView) {
+    setBeenInView(true);
+  }
+  return (
+    <div className="box" ref={ref}>
+      <article className="media">
+        <div className="media-content">
+          <h3>
+            <Link to={`/${card.id}?url=${encodeURIComponent(card.url)}`}>
+              {card.text}
+            </Link>
+          </h3>
+          {inView || beenInView ? (
+            <Link to={`/${card.id}?url=${encodeURIComponent(card.url)}`}>
+              <img src={card.img} alt={card.text} />
+            </Link>
+          ) : (
+            <div className="loading-picture">Loading picture...</div>
+          )}
+          <br />
+          <small>{card.human_time}</small>
+        </div>
+      </article>
     </div>
   );
 }

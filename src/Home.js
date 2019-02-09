@@ -81,6 +81,9 @@ function ShowCards({ cards }) {
         <img src={logo} alt="Keep Calm and Chive On" />
       </p>
       {cards.map((card, i) => {
+        // legacy junk from older storage hacks
+        if (!card.id) return null;
+
         return (
           <Box
             card={card}

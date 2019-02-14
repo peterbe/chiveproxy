@@ -20,4 +20,4 @@ Object.entries(data).forEach(([key, value]) => {
 tag = tag.trim() + "/>";
 
 html = html.replace(/<div id="_version" [^>]+>/, tag);
-fs.writeFileSync(htmlFile, newHtml, "utf8");
+fs.writeFileSync(htmlFile, html, "utf8");

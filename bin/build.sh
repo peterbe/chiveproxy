@@ -4,6 +4,7 @@ set -e
 
 find . | grep --color=never '\~$' | xargs rm -f
 
+export INLINE_RUNTIME_CHUNK=false
 yarn run build
 zopfli build/static/**/*.css
 zopfli build/static/**/*.js

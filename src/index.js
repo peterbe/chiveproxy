@@ -11,7 +11,14 @@ serviceWorker.register({
   onUpdate: registration => {
     showToast(() => {
       console.warn("RELOADING NOW!");
-      registration.waiting.postMessage("skipWaiting");
+      try {
+        registration.waiting.postMessage("skipWaiting");
+      } catch (ex) {
+        console.error(
+          "Failing to execute registration.waiting.postMessage",
+          ex
+        );
+      }
       window.location.reload(true);
     });
     const a = document.createElement("a");

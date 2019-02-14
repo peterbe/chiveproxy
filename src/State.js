@@ -33,7 +33,9 @@ export class CardsContainer extends Container {
     }
     if (response.ok) {
       const data = await response.json();
-      const homeCards = this.state.homeCards || [];
+      // const homeCards = this.state.homeCards || [];
+      const initialCards = this.state.homeCards || [];
+      const homeCards = initialCards.slice(0); // never mutate!
       const hasIds = new Set(homeCards.map(card => card.id));
       data.cards.forEach((card, i) => {
         if (!hasIds.has(card.id)) {

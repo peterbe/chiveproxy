@@ -71,9 +71,9 @@ function ShowCards({ cards }) {
     document.title = `(${cards.length}) Posts`;
   });
 
-  const beenInView = new Set(
-    JSON.parse(sessionStorage.getItem("beenInView") || "[]")
-  );
+  const beenInView = React.useMemo(() => {
+    return new Set(JSON.parse(sessionStorage.getItem("beenInView") || "[]"));
+  }, [cards]);
 
   return (
     <div className="content">
@@ -96,11 +96,11 @@ function ShowCards({ cards }) {
   );
 }
 
-function Box({ card, startInView }) {
+// XXX I don't think this memo works! Probably because of bad mutations.
+const Box = React.memo(({ card, startInView }) => {
   const [beenInView, setBeenInView] = React.useState(startInView);
 
-  const ref = React.useRef();
-  const inView = useInView(ref, {
+  const [ref, inView] = useInView({
     /* https://www.npmjs.com/package/react-intersection-observer#options */
     triggerOnce: true
   });
@@ -138,4 +138,4 @@ function Box({ card, startInView }) {
       </article>
     </div>
   );
-}
+});

@@ -7,11 +7,11 @@
     "bulma-toast": "1.5.0",
     "idb-keyval": "3.1.0",
     "intersection-observer": "0.5.1",
-    "ky": "0.8.0",
+    "ky": "0.9.0",
     "node-sass": "4.11.0",
-    "react": "16.8.1",
-    "react-dom": "16.8.1",
-    "react-intersection-observer": "8.0.1",
+    "react": "16.8.4",
+    "react-dom": "16.8.4",
+    "react-intersection-observer": "8.10.0",
     "react-router-dom": "4.3.1",
     "react-scripts": "2.1.5",
     "smoothscroll-polyfill": "0.4.3",
@@ -35,6 +35,6 @@
     "not dead"
   ],
   "devDependencies": {
-    "source-map-explorer": "1.6.0"
+    "source-map-explorer": "1.7.0"
   }
 }

@@ -133,6 +133,10 @@ function iToId(i) {
 
 const PictureBox = React.memo(({ i, card, picture }) => {
   const id = iToId(i);
+
+  function splitlines(s) {
+    return s.split(/\n/g);
+  }
   return (
     <Subscribe to={[BoxInViewContainer]}>
       {inView => (
@@ -155,7 +159,11 @@ const PictureBox = React.memo(({ i, card, picture }) => {
                     caption={card.caption}
                   />
                   {picture.caption && (
-                    <p className="caption">{picture.caption}</p>
+                    <p className="caption">
+                      {splitlines(picture.caption).map((line, i) => {
+                        return [<span key={line}>{line}</span>, <br key={i} />];
+                      })}
+                    </p>
                   )}
                 </div>
               </div>

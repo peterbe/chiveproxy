@@ -106,39 +106,41 @@ export class CardsContainer extends Container {
     );
   };
 
-  fetchCard = async (hash, url) => {
-    let response;
-    try {
-      response = await ky(`/api/cards/${hash}/?url=${url}`);
-    } catch (ex) {
-      console.warn(ex);
-      return this.setState({
-        loading: false,
-        loadingError: ex.toString()
-      });
-    }
-
-    if (response.status === 404) {
-      this.setState(state => {
-        return {
-          cardsNotFound: [...state.cardsNotFound, hash],
+  fetchCard = (hash, url) => {
+    this.setState({ loading: true }, async () => {
+      let response;
+      try {
+        response = await ky(`/api/cards/${hash}/?url=${url}`);
+      } catch (ex) {
+        console.warn(ex);
+        return this.setState({
           loading: false,
-          loadingError: null
-        };
-      });
-    } else if (response.ok) {
-      const data = await response.json();
-      this.setState({
-        loading: false,
-        loadingError: null,
-        allCards: Object.assign({ [hash]: data }, this.state.allCards)
-      });
-    } else {
-      this.setState({
-        loading: false,
-        loadingError: `${response.status} trying to load ${url}`
-      });
-    }
+          loadingError: ex.toString()
+        });
+      }
+
+      if (response.status === 404) {
+        this.setState(state => {
+          return {
+            cardsNotFound: [...state.cardsNotFound, hash],
+            loading: false,
+            loadingError: null
+          };
+        });
+      } else if (response.ok) {
+        const data = await response.json();
+        this.setState({
+          loading: false,
+          loadingError: null,
+          allCards: Object.assign({ [hash]: data }, this.state.allCards)
+        });
+      } else {
+        this.setState({
+          loading: false,
+          loadingError: `${response.status} trying to load ${url}`
+        });
+      }
+    });
   };
 }
 

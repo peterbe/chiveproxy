@@ -73,7 +73,7 @@ function ShowCards({ cards }) {
 
   const beenInView = React.useMemo(() => {
     return new Set(JSON.parse(sessionStorage.getItem("beenInView") || "[]"));
-  }, [cards]);
+  }, []);
 
   return (
     <div className="content">
@@ -112,7 +112,7 @@ const Box = React.memo(({ card, startInView }) => {
       rememberedInView.push(card.id);
       sessionStorage.setItem("beenInView", JSON.stringify(rememberedInView));
     }
-  }, [beenInView]);
+  }, [beenInView, card, startInView]);
   if (inView && !beenInView) {
     setBeenInView(true);
   }

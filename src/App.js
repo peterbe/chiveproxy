@@ -2,6 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import { Provider, Subscribe } from "unstated";
 import { CardsContainer, BoxInViewContainer } from "./State";
+// XXX I really need to figure out how to import into namespaces
+import { clear, get } from "idb-keyval";
 import Home from "./Home";
 import Card from "./Card";
 
@@ -23,6 +25,7 @@ class App extends React.Component {
                     <Nav cards={cards} inview={inview} {...props} />
                   )}
                 />
+                <Debugging cards={cards} />
                 <section className="section">
                   <Switch>
                     <Route
@@ -60,6 +63,63 @@ const NoMatch = ({ location }) => (
     </h3>
   </div>
 );
+
+function Debugging({ cards }) {
+  const [keysCount, setKeysCount] = React.useState(null);
+  const [clearSure, setClearSure] = React.useState(false);
+  if (process.env.NODE_ENV !== "development") {
+    return null;
+  }
+  get("home").then(val => {
+    setKeysCount(val ? val.length : 0);
+  });
+  // if (cards.state.homeCards) {
+  //   console.log("homeCards:", cards.state.homeCards.slice(0, 4).map(c => c.id));
+  // }
+  // if (cards.state.newCards) {
+  //   console.log("newCards:", cards.state.newCards.slice(0, 4).map(c => c.id));
+  // }
+  return (
+    <div id="debugging">
+      <h4 className="title is-4">Debugging</h4>
+      <table className="table">
+        <tbody>
+          <tr>
+            <th>state.homeCards:</th>
+            <td>
+              {cards.state.homeCards ? cards.state.homeCards.length : "none"}
+            </td>
+          </tr>
+          <tr>
+            <th>state.newCards:</th>
+            <td>
+              {cards.state.newCards ? cards.state.newCards.length : "none"}
+            </td>
+          </tr>
+          <tr>
+            <th>idb cards:</th>
+            <td>{keysCount !== null ? keysCount : "none"}</td>
+          </tr>
+        </tbody>
+      </table>
+      <button
+        type="button"
+        className={clearSure ? "button is-danger" : "button is-warning"}
+        onClick={e => {
+          if (!clearSure) {
+            setClearSure(true);
+          } else {
+            clear();
+            console.warn("CLEARED");
+            setClearSure(false);
+          }
+        }}
+      >
+        {clearSure !== false ? "Sure?" : "Clear IndexedDB?"}
+      </button>
+    </div>
+  );
+}
 
 const DisplayVersion = React.memo(() => {
   const element = document.querySelector("#_version");

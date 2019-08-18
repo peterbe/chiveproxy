@@ -12,7 +12,7 @@ class Home extends React.Component {
         cards.loadHomeCards();
       });
     } else {
-      cards.fetchHomeCards();
+      cards.fetchHomeCards(null, true);
     }
   }
 

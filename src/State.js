@@ -1,4 +1,5 @@
 import ky from "ky";
+import { toast } from "bulma-toast";
 import { clear, get, set } from "idb-keyval";
 import { Container } from "unstated";
 
@@ -8,6 +9,7 @@ export class CardsContainer extends Container {
   state = {
     homeCards: null,
     allCards: {},
+    newCards: null,
     cardsNotFound: [],
     loading: true,
     loadingError: null,
@@ -20,7 +22,7 @@ export class CardsContainer extends Container {
     this.fetchHomeCards();
   };
 
-  fetchHomeCards = async (since = null) => {
+  fetchHomeCards = async (since = null, addToNew = false) => {
     let response;
     try {
       response = await ky(`/api/cards/?since=${since}`);
@@ -33,14 +35,22 @@ export class CardsContainer extends Container {
     }
     if (response.ok) {
       const data = await response.json();
-      // const homeCards = this.state.homeCards || [];
+
+      // const homeCardsWasEmpty = !this.state.homeCards;
       const initialCards = this.state.homeCards || [];
       const homeCards = initialCards.slice(0); // never mutate!
       const hasIds = new Set(homeCards.map(card => card.id));
+      const initialNewCards = this.state.newCards || [];
+      const newCards = initialNewCards.slice(0); // never mutate!
+
       data.cards.forEach((card, i) => {
         if (!hasIds.has(card.id)) {
           hasIds.add(card.id);
-          homeCards.push(card);
+          if (addToNew) {
+            newCards.push(card);
+          } else {
+            homeCards.push(card);
+          }
         }
       });
       homeCards.sort((a, b) => {
@@ -48,20 +58,48 @@ export class CardsContainer extends Container {
         if (a.created < b.created) return 1;
         return 0;
       });
+      newCards.sort((a, b) => {
+        if (a.created > b.created) return -1;
+        if (a.created < b.created) return 1;
+        return 0;
+      });
+
       this.setState(
         {
           homeCards,
+          newCards,
           loading: false,
           loadingError: null,
           updating: false,
           oldestCard: data._oldest_card
         },
-        this.persistHomeCards
+        () => {
+          this.persistHomeCards();
+
+          if (this.state.newCards && this.state.newCards.length) {
+            const a = document.createElement("a");
+            a.onclick = function(event) {
+              // event.preventDefault();
+              // callback();
+            };
+            a.text = `${this.state.newCards.length} new posts!`;
+            a.href = "/";
+            toast({
+              message: a,
+              type: "is-success",
+              dismissible: false,
+              position: "top-center",
+              closeOnClick: true,
+              duration: 100000
+            });
+          }
+        }
       );
-      if (data._updating) {
-        console.warn("Server is updating! Come back again soon.");
-        this.setState({ updating: true });
-      }
+
+      // if (data._updating) {
+      //   console.warn("Server is updating! Come back again soon.");
+      //   this.setState({ updating: true });
+      // }
     } else {
       this.setState({
         loading: false,

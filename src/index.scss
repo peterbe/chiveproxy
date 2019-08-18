@@ -30,7 +30,6 @@ $text-strong: $white-ter;
 // iPhone 6/7/8 portrait
 $break-small: 375px;
 
-
 body {
   padding-top: 140px;
 }
@@ -95,7 +94,18 @@ section.section {
       left: 50%;
       transform: translate(-50%, -50%);
       height: 100%;
-    width: auto;
+      width: auto;
     }
+  }
+}
+
+#debugging {
+  margin: 50px;
+  padding: 20px;
+  background-color: #efefef;
+  color: black;
+  font-family: Monaco, monospace;
+  th {
+    color: black;
   }
 }

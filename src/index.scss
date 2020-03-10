@@ -21,6 +21,7 @@ $body-background-color: $grey-darker;
 // $text: #ffffff;
 $text: $grey-dark;
 
+$button-color: black;
 $primary: #00c300;
 
 $text-strong: $white-ter;
@@ -96,16 +97,5 @@ section.section {
       height: 100%;
       width: auto;
     }
-  }
-}
-
-#debugging {
-  margin: 50px;
-  padding: 20px;
-  background-color: #efefef;
-  color: black;
-  font-family: Monaco, monospace;
-  th {
-    color: black;
   }
 }

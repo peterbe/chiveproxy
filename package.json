@@ -35,6 +35,6 @@
     "not dead"
   ],
   "devDependencies": {
-    "source-map-explorer": "2.4.0"
+    "source-map-explorer": "2.4.1"
   }
 }

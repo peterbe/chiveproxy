@@ -6,7 +6,7 @@
     "bulma": "0.8.2",
     "bulma-toast": "1.5.10",
     "http-proxy-middleware": "1.0.3",
-    "node-sass": "4.13.1",
+    "node-sass": "4.14.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-intersection-observer": "8.26.1",

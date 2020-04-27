@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { useInView } from "react-intersection-observer";
@@ -10,7 +10,7 @@ const logo = process.env.PUBLIC_URL + "/kcco.png";
 smoothscroll.polyfill();
 
 function erringFetch(url) {
-  return fetch(url).then(r => {
+  return fetch(url).then((r) => {
     if (!r.ok) {
       throw new Error(`${r.status} on ${url}`);
     }
@@ -21,8 +21,31 @@ function erringFetch(url) {
 function Home() {
   const [showTopButton, setShowTopButton] = useState(true);
 
-  const [fetchUrl, setFetchUrl] = useState("/api/cards/");
-  const { data, error } = useSWR(fetchUrl, erringFetch);
+  const [since, setSince] = useState(null);
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
+
+  const getFetchUrl = useCallback(() => {
+    const sp = new URLSearchParams();
+    if (since) {
+      sp.set("since", since);
+    }
+    if (search) {
+      sp.set("search", search);
+    }
+    const queryString = sp.toString();
+    const base = "/api/cards/";
+    if (queryString) {
+      return base + "?" + queryString;
+    }
+    return base;
+  }, [since, search]);
+
+  const { data, error, mutate } = useSWR(getFetchUrl(), erringFetch);
 
   React.useEffect(() => {
     if (data && data.cards) {
@@ -41,17 +64,25 @@ function Home() {
     }
   }, [logoInView, showTopButton]);
 
+  function submitSearch(event) {
+    event.preventDefault();
+    setSearch(searchInput);
+  }
+
+  function clearSearch(event) {
+    event.preventDefault();
+    setSearch("");
+  }
+
   function triggerFullReload() {
     window.location.reload();
   }
   function triggerReload() {
-    setFetchUrl(`/api/cards/?r=${Math.random()}`);
+    mutate();
   }
   function triggerNextPage() {
-    let sp = new URLSearchParams();
     let last = data.cards[data.cards.length - 1];
-    sp.set("since", last.created);
-    setFetchUrl(`/api/cards/?${sp.toString()}`);
+    setSince(last.created);
   }
 
   if (error) {
@@ -62,7 +93,7 @@ function Home() {
           <button
             className="delete"
             aria-label="delete"
-            onClick={event => {
+            onClick={(event) => {
               event.preventDefault();
               triggerFullReload();
             }}
@@ -74,7 +105,7 @@ function Home() {
           <Link
             to="/"
             className="button"
-            onClick={event => {
+            onClick={(event) => {
               window.scroll({ top: 0, behavior: "smooth" });
               triggerFullReload();
             }}
@@ -85,6 +116,8 @@ function Home() {
       </article>
     );
   }
+
+  const loading = !error && !data;
 
   return (
     <div>
@@ -97,10 +130,10 @@ function Home() {
           <Link
             to="/"
             className="navbar-item"
-            onClick={event => {
+            onClick={(event) => {
               window.scroll({
                 top: 0,
-                behavior: "smooth"
+                behavior: "smooth",
               });
             }}
           >
@@ -118,7 +151,7 @@ function Home() {
             <Link
               to="/"
               className="navbar-item"
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault();
                 window.scroll({ top: 0, behavior: "smooth" });
               }}
@@ -130,7 +163,7 @@ function Home() {
             <Link
               to="/"
               className="navbar-item"
-              onClick={event => {
+              onClick={(event) => {
                 window.scroll({ top: 0, behavior: "smooth" });
                 triggerReload();
               }}
@@ -144,22 +177,49 @@ function Home() {
         <p style={{ textAlign: "center" }} ref={logoRef}>
           <img src={logo} alt="Keep Calm and Chive On" />
         </p>
-        {data ? (
-          <ShowCards cards={data.cards} />
-        ) : (
+        <div className="box">
+          <form onSubmit={submitSearch}>
+            <div className="field has-addons">
+              <p className="control is-expanded">
+                <input
+                  className="input"
+                  type="search"
+                  placeholder="Search..."
+                  value={searchInput}
+                  disabled={loading}
+                  onChange={(event) => {
+                    setSearchInput(event.target.value);
+                  }}
+                />
+              </p>
+              <p className="control">
+                <button className="button is-info">Search</button>
+              </p>
+            </div>
+            {data && data.search && (
+              <p>
+                Found {data.search.count} matches{" "}
+                <button type="button" className="button" onClick={clearSearch}>
+                  Clear
+                </button>
+              </p>
+            )}
+          </form>
+        </div>
+        {loading && (
           <div className="box is-loading">
             <article className="media is-loading">
               <p>Loading...</p>
             </article>
           </div>
         )}
-
+        {data && <ShowCards cards={data.cards} />}
         {data && (
           <p>
             <button
               className="button is-medium is-fullwidth"
               type="button"
-              onClick={event => {
+              onClick={(event) => {
                 triggerNextPage();
               }}
             >

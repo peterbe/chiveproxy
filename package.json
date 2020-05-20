@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "bulma": "0.8.2",
-    "bulma-toast": "1.5.10",
+    "bulma-toast": "2.0.1",
     "http-proxy-middleware": "1.0.4",
     "node-sass": "4.14.1",
     "react": "16.13.1",

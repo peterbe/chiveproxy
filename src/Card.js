@@ -11,8 +11,17 @@ import "./card.scss";
 // Needed for the sake if iOS Safari
 smoothscroll.polyfill();
 
+function fetchWithTimeout(url, options, timeout = 3000) {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), timeout)
+    ),
+  ]);
+}
+
 function erringFetch(url) {
-  return fetch(url).then(r => {
+  return fetchWithTimeout(url).then((r) => {
     if (!r.ok) {
       throw new Error(`${r.status} on ${url}`);
     }
@@ -60,10 +69,10 @@ function Card() {
           <Link
             to="/"
             className="navbar-item"
-            onClick={event => {
+            onClick={() => {
               window.scroll({
                 top: 0,
-                behavior: "smooth"
+                behavior: "smooth",
               });
             }}
           >
@@ -81,7 +90,7 @@ function Card() {
             <Link
               to="/"
               className="navbar-item"
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault();
                 window.scroll({ top: 0, behavior: "smooth" });
               }}
@@ -93,7 +102,7 @@ function Card() {
             <Link
               to="/"
               className="navbar-item"
-              onClick={event => {
+              onClick={(event) => {
                 window.scroll({ top: 0, behavior: "smooth" });
                 triggerFullReload();
               }}
@@ -105,7 +114,7 @@ function Card() {
             <Link
               to="/"
               className="navbar-item"
-              onClick={event => {
+              onClick={(event) => {
                 if (history.action === "PUSH") {
                   event.preventDefault();
                   history.goBack();
@@ -217,14 +226,14 @@ const Grid = React.memo(({ pictures }) => {
         <a
           href={`#${iToId(i)}`}
           key={picture.img}
-          onClick={event => {
+          onClick={(event) => {
             event.preventDefault();
             const id = event.currentTarget.getAttribute("href").slice(1);
             const element = document.getElementById(id);
             if (element) {
               window.scroll({
                 top: element.offsetTop + 30,
-                behavior: "smooth"
+                behavior: "smooth",
               });
             } else {
               console.warn(`No element with id '${id}'`);

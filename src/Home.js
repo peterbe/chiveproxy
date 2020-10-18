@@ -9,8 +9,17 @@ const logo = process.env.PUBLIC_URL + "/kcco.png";
 // Needed for the sake if iOS Safari
 smoothscroll.polyfill();
 
+function fetchWithTimeout(url, options, timeout = 4000) {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), timeout)
+    ),
+  ]);
+}
+
 function erringFetch(url) {
-  return fetch(url).then((r) => {
+  return fetchWithTimeout(url).then((r) => {
     if (!r.ok) {
       throw new Error(`${r.status} on ${url}`);
     }

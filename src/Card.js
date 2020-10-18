@@ -11,7 +11,7 @@ import "./card.scss";
 // Needed for the sake if iOS Safari
 smoothscroll.polyfill();
 
-function fetchWithTimeout(url, options, timeout = 3000) {
+function fetchWithTimeout(url, options, timeout = 4000) {
   return Promise.race([
     fetch(url, options),
     new Promise((_, reject) =>
@@ -102,7 +102,7 @@ function Card() {
             <Link
               to="/"
               className="navbar-item"
-              onClick={(event) => {
+              onClick={() => {
                 window.scroll({ top: 0, behavior: "smooth" });
                 triggerFullReload();
               }}

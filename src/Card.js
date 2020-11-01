@@ -203,6 +203,7 @@ function PictureBox({ i, card, picture }) {
             <Image
               src={picture.img}
               gifsrc={picture.gifsrc}
+              mp4src={picture.mp4src}
               caption={card.caption}
             />
             {picture.caption && (
@@ -247,6 +248,24 @@ const Grid = React.memo(({ pictures }) => {
   );
 });
 
-const Image = React.memo(({ src, gifsrc, caption }) => {
-  return <img src={gifsrc || src} alt={caption || "no caption"} />;
+const Image = React.memo(({ src, gifsrc, mp4src, caption }) => {
+  const { ref, inView } = useInView();
+  if (mp4src) {
+    return (
+      <video
+        ref={ref}
+        autoPlay={inView}
+        loop
+        muted
+        controls={true}
+        poster={src}
+      >
+        <source src={mp4src} type="video/mp4" />
+      </video>
+    );
+  } else {
+    return (
+      <img src={gifsrc || src} alt={caption || "no caption"} loading="lazy" />
+    );
+  }
 });

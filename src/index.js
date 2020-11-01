@@ -5,10 +5,15 @@ import App from "./App";
 import { toast } from "bulma-toast";
 import * as serviceWorker from "./serviceWorker";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
+);
 
 serviceWorker.register({
-  onUpdate: registration => {
+  onUpdate: (registration) => {
     showToast(() => {
       console.warn("RELOADING NOW!");
       try {
@@ -24,19 +29,19 @@ serviceWorker.register({
     const a = document.createElement("a");
     a.textContent = "Reload app";
     a.href = "/?reload";
-    a.addEventListener("click", event => {
+    a.addEventListener("click", (event) => {
       event.preventDefault();
       alert("Attempting to reload app.");
       registration.waiting.postMessage("skipWaiting");
       window.location.reload(true);
     });
     document.querySelector(".version-info").appendChild(a);
-  }
+  },
 });
 
 function showToast(callback) {
   const a = document.createElement("a");
-  a.onclick = function(event) {
+  a.onclick = function (event) {
     event.preventDefault();
     callback();
   };
@@ -47,6 +52,6 @@ function showToast(callback) {
     type: "is-info",
     dismissible: false,
     closeOnClick: true,
-    duration: 10000
+    duration: 10000,
   });
 }

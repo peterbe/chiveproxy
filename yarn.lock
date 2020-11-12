@@ -9724,10 +9724,10 @@ react-error-overlay@^6.0.8:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.8.tgz#474ed11d04fc6bda3af643447d85e9127ed6b5de"
   integrity sha512-HvPuUQnLp5H7TouGq3kzBeioJmXms1wHy9EGjz2OURWBp4qZO6AfGEcnxts1D/CbwPLRAgTMPCEgYhA3sEM4vw==
 
-react-intersection-observer@8.30.1:
-  version "8.30.1"
-  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.30.1.tgz#e0ce4835d2834fc712b096aec65230de79eeaadb"
-  integrity sha512-BGHGkmWz/d4Gs+44jWkrZBtJ6//HGwouZ9ub+kRRoRfguw2JoDlVrgTDwkQ/deDJAR9keTkQmMilNu+onhqfgw==
+react-intersection-observer@8.30.2:
+  version "8.30.2"
+  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.30.2.tgz#f16d8298675917f5494ee934fdf242e2e639cca7"
+  integrity sha512-aC+5XKIPv3fLwycpupksG6MYqoJZnutpbXgFPzs+AJfNSeAfvOTg0tqCUxFJZBPcGe1Ev8VsQ/0wqv6/aPllGA==
 
 react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.0"

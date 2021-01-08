@@ -13,7 +13,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.1",
     "smoothscroll-polyfill": "0.4.4",
-    "swr": "0.3.11"
+    "swr": "0.4.0"
   },
   "resolutions": {
     "acorn": ">=6.4.1"

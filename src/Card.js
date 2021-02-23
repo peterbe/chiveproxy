@@ -206,13 +206,18 @@ function PictureBox({ i, card, picture }) {
               mp4src={picture.mp4src}
               caption={card.caption}
             />
-            {picture.caption && (
+            {picture.caption_html ? (
+              <p
+                className="caption"
+                dangerouslySetInnerHTML={{ __html: picture.caption_html }}
+              ></p>
+            ) : picture.caption ? (
               <p className="caption">
                 {splitlines(picture.caption).map((line, i) => {
                   return [<span key={line}>{line}</span>, <br key={i} />];
                 })}
               </p>
-            )}
+            ) : null}
           </div>
         </div>
       </article>

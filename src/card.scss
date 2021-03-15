@@ -1,8 +1,14 @@
 div.navcontrol {
-    position: fixed;
-    bottom: 5px;
-    right: 5px;
-    background-color: #efefef;
-    padding: 5px;
-    border-radius: 4px;
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  background-color: #efefef;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+div.pictures {
+  p.caption strong {
+    color: #393939;
+  }
 }

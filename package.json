@@ -13,7 +13,7 @@
     "sass": "1.32.8",
     "smoothscroll-polyfill": "0.4.4",
     "swr": "0.5.3",
-    "workbox-background-sync": "6.1.1",
+    "workbox-background-sync": "6.1.2",
     "workbox-broadcast-update": "6.1.1",
     "workbox-cacheable-response": "6.1.1",
     "workbox-core": "6.1.2",

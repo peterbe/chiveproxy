@@ -12,7 +12,7 @@
     "react-scripts": "4.0.3",
     "sass": "1.32.8",
     "smoothscroll-polyfill": "0.4.4",
-    "swr": "0.5.3",
+    "swr": "0.5.4",
     "workbox-background-sync": "6.1.2",
     "workbox-broadcast-update": "6.1.2",
     "workbox-cacheable-response": "6.1.2",

@@ -27,6 +27,35 @@ function erringFetch(url) {
   });
 }
 
+const LOCALSTORAGE_REMOVED_CARDS_KEY = "chiveproxy-removed-cards";
+
+function getRemovedCardsLocalStorage() {
+  try {
+    const serialized = localStorage.getItem(LOCALSTORAGE_REMOVED_CARDS_KEY);
+    if (serialized) {
+      return JSON.parse(serialized);
+    }
+  } catch (error) {
+    console.warn(
+      `Unable to get '${LOCALSTORAGE_REMOVED_CARDS_KEY}' from localStorage`,
+      error
+    );
+  }
+  return [];
+}
+
+function setRemovedCardsLocalStorage(ids) {
+  try {
+    const serialized = JSON.stringify(ids.slice(0, 100));
+    localStorage.setItem(LOCALSTORAGE_REMOVED_CARDS_KEY, serialized);
+  } catch (error) {
+    console.warn(
+      `Unable to set '${LOCALSTORAGE_REMOVED_CARDS_KEY}' in localStorage`,
+      error
+    );
+  }
+}
+
 function Home() {
   const [showTopButton, setShowTopButton] = useState(true);
 
@@ -37,6 +66,24 @@ function Home() {
   useEffect(() => {
     setSearchInput(search);
   }, [search]);
+
+  const [removedCards, setRemovedCards] = useState(
+    getRemovedCardsLocalStorage()
+  );
+
+  function removeCard(id) {
+    setRemovedCards((before) => {
+      if (before.includes(id)) {
+        return before.filter((thisId) => thisId !== id);
+      } else {
+        return [id, ...before];
+      }
+    });
+  }
+  useEffect(() => {
+    console.log("NOW:", removedCards);
+    setRemovedCardsLocalStorage(removedCards);
+  }, [removedCards]);
 
   const getFetchUrl = useCallback(() => {
     const sp = new URLSearchParams();
@@ -222,7 +269,13 @@ function Home() {
             </article>
           </div>
         )}
-        {data && <ShowCards cards={data.cards} />}
+        {data && (
+          <ShowCards
+            cards={data.cards}
+            removedCards={removedCards}
+            removeCard={removeCard}
+          />
+        )}
         {data && (
           <p>
             <button
@@ -243,7 +296,7 @@ function Home() {
 
 export default Home;
 
-function ShowCards({ cards }) {
+function ShowCards({ cards, removedCards, removeCard }) {
   if (!cards.length) {
     return <b>No cards. Weird!</b>;
   } else {
@@ -251,24 +304,45 @@ function ShowCards({ cards }) {
       // legacy junk from older storage hacks
       if (!card.id) return null;
 
-      return <Box card={card} key={card.id} />;
+      return (
+        <Box
+          card={card}
+          key={card.id}
+          removed={removedCards.includes(card.id)}
+          removeCard={removeCard}
+        />
+      );
     });
   }
 }
 
-function Box({ card }) {
+function Box({ card, removed, removeCard }) {
   return (
     <div className="box">
-      <article className="media">
+      <article className={`media ${removed ? "removed-card" : ""}`}>
         <div className="media-content">
           <h3>
             <Link to={`/${card.id}`}>{card.text}</Link>
           </h3>
-          <Link to={`/${card.id}`}>
-            <img src={card.img} alt={card.text} />
-          </Link>
+          {!removed && (
+            <Link to={`/${card.id}`}>
+              <img src={card.img} alt={card.text} />
+            </Link>
+          )}
 
           <br />
+
+          <button
+            type="button"
+            title="Toggle to remove this one"
+            style={{ float: "right" }}
+            onClick={() => {
+              removeCard(card.id);
+            }}
+          >
+            🗑
+          </button>
+
           <small>{card.human_time}</small>
         </div>
       </article>

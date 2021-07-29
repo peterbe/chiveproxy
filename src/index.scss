@@ -64,6 +64,13 @@ section.section {
     // border: 2px solid red;
     padding: 2rem 0.5rem;
   }
+
+  article.removed-card {
+    opacity: 0.7;
+    h3 {
+      font-size: 0.9em;
+    }
+  }
 }
 
 .box a:visited {

@@ -58,6 +58,28 @@ function Card() {
     }
   }, [headerInView, showTopButton]);
 
+  const [shared, setShared] = useState(false);
+  const [shareError, setShareError] = useState(null);
+  const [supportWebShare, setSupportWebShare] = useState(false);
+  useEffect(() => {
+    if (navigator.share) {
+      setSupportWebShare(true);
+    }
+  }, []);
+  useEffect(() => {
+    let mounted = true;
+    if (shared) {
+      setTimeout(() => {
+        if (mounted) {
+          setShared(false);
+        }
+      }, 9000);
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [shared]);
+
   return (
     <div>
       <nav
@@ -121,7 +143,41 @@ function Card() {
                 }
               }}
             >
-              <button className="button">⬅ Go back</button>
+              <button className="button">⬅ Back</button>
+            </Link>
+          )}
+          {!error && data && supportWebShare && (
+            <Link
+              to="/"
+              className="navbar-item"
+              onClick={(event) => {
+                event.preventDefault();
+
+                const shareData = {
+                  title: "The Chive PWA",
+                  text: data.text,
+                  url: window.location.href,
+                };
+                console.log(data);
+                console.log(shareData);
+                try {
+                  navigator
+                    .share(shareData)
+                    .then(() => {
+                      setShared(true);
+                      setShareError(null);
+                    })
+                    .catch((e) => {
+                      if (!e.toString().includes("AbortError")) {
+                        setShareError(e);
+                      }
+                    });
+                } catch (err) {
+                  setShareError(err);
+                }
+              }}
+            >
+              <button className="button">{shared ? "Shared" : "Share"}</button>
             </Link>
           )}
         </div>
@@ -144,6 +200,21 @@ function Card() {
           </article>
         )}
 
+        {shareError && (
+          <article className="message is-danger">
+            <div className="message-header">
+              <p>Share Error</p>
+              <button
+                className="delete"
+                aria-label="delete"
+                onClick={() => {
+                  setShareError(null);
+                }}
+              />
+            </div>
+            <div className="message-body">{shareError.toString()}</div>
+          </article>
+        )}
         {data && <ShowCard card={data} headerRef={headerRef} />}
       </div>
     </div>

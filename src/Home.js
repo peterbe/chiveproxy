@@ -81,7 +81,6 @@ function Home() {
     });
   }
   useEffect(() => {
-    console.log("NOW:", removedCards);
     setRemovedCardsLocalStorage(removedCards);
   }, [removedCards]);
 

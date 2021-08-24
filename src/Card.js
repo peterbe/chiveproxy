@@ -158,8 +158,6 @@ function Card() {
                   text: data.text,
                   url: window.location.href,
                 };
-                console.log(data);
-                console.log(shareData);
                 try {
                   navigator
                     .share(shareData)

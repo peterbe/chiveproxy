@@ -14,7 +14,7 @@
     "smoothscroll-polyfill": "0.4.4",
     "swr": "0.5.6",
     "workbox-background-sync": "6.3.0",
-    "workbox-broadcast-update": "6.2.4",
+    "workbox-broadcast-update": "6.3.0",
     "workbox-cacheable-response": "6.3.0",
     "workbox-core": "6.2.4",
     "workbox-expiration": "6.3.0",

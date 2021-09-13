@@ -12455,14 +12455,14 @@ workbox-navigation-preload@^5.1.4:
   dependencies:
     workbox-core "^5.1.4"
 
-workbox-precaching@6.2.4:
-  version "6.2.4"
-  resolved "https://registry.yarnpkg.com/workbox-precaching/-/workbox-precaching-6.2.4.tgz#6e8a616b0817a92be01108d260f1e8626b0627b7"
-  integrity sha512-7POznbVc8EG/mkbXzeb94x3B1VJruPgXvXFgS0NJ3GRugkO4ULs/DpIIb+ycs7uJIKY9EzLS7VXvElr3rMSozQ==
+workbox-precaching@6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/workbox-precaching/-/workbox-precaching-6.3.0.tgz#5dc34161ef03ef3cc23af6d78f0b1583f3d180d0"
+  integrity sha512-bND3rUxiuzFmDfeKywdvOqK0LQ5LLbOPk0eX22PlMQNOOduHRxzglMpgHo/MR6h+8cPJ3GpxT8hZ895/7bHMqQ==
   dependencies:
-    workbox-core "6.2.4"
-    workbox-routing "6.2.4"
-    workbox-strategies "6.2.4"
+    workbox-core "6.3.0"
+    workbox-routing "6.3.0"
+    workbox-strategies "6.3.0"
 
 workbox-precaching@^5.1.4:
   version "5.1.4"
